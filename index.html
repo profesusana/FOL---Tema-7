@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Tema 7 · El contrato de trabajo | FOL</title>
+<style>
+:root{
+  --bg:#f5f6fb;--surface:#fff;--ink:#202b3d;--muted:#66738a;
+  --brand:#b84e19;--brand-dark:#923b12;--brand-soft:#fff0e6;
+  --line:#e1e5ed;--good:#187747;--good-bg:#e8f7ef;
+  --bad:#b42332;--bad-bg:#fff0f0;--shadow:0 14px 38px #29365312;
+  --radius:20px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at top left,#fff0e6 0,transparent 42%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+button,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,select:focus-visible{outline:3px solid #e7a17f;outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:23px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800}
+.logo{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;color:#fff;background:var(--brand);font-size:20px;box-shadow:0 8px 18px #b84e1930}
+.eyebrow{font-size:.76rem;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:var(--brand)}
+.credit-top{font-size:.83rem;color:var(--muted);text-align:right}
+.hero{background:linear-gradient(135deg,#82350f,#b84e19 62%,#df793e);color:#fff;border-radius:28px;padding:clamp(25px,5vw,48px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:300px;height:300px;border:45px solid #ffffff12;border-radius:50%;right:-90px;top:-130px}
+.hero>*{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #ffffff55;border-radius:99px;padding:6px 11px;font-weight:750;font-size:.82rem}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.08;max-width:760px;margin:14px 0;letter-spacing:-.045em}
+.hero p{max-width:720px;color:#ffede2;margin:0}
+.credit-main{font-size:1rem;font-weight:850;margin-top:25px;color:#fff}
+.section-heading{margin:30px 0 13px;font-size:1.2rem;letter-spacing:-.02em}
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.topic{display:flex;gap:13px;text-align:left;align-items:flex-start;padding:17px;background:var(--surface);border:1px solid var(--line);border-radius:17px;color:var(--ink);transition:transform .16s,border-color .16s,box-shadow .16s}
+.topic:hover{transform:translateY(-2px);border-color:#e2a080;box-shadow:0 10px 24px #b84e1910}
+.topic.selected{border:2px solid var(--brand);padding:16px;background:#fff7f2}
+.topic-num{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:var(--brand-soft);color:var(--brand);font-weight:900}
+.topic-name{display:block;font-weight:850;line-height:1.25}
+.topic-desc{display:block;color:var(--muted);font-size:.84rem;margin-top:5px}
+.setup{display:flex;align-items:end;flex-wrap:wrap;gap:14px;margin-top:18px;background:#fff;border:1px solid var(--line);padding:19px;border-radius:18px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1}
+.field label{font-size:.86rem;font-weight:850}
+.field select{width:100%;border:1px solid #cbd4e1;border-radius:11px;padding:11px 12px;background:#fff;color:var(--ink)}
+.btn{border:0;border-radius:12px;padding:11px 17px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,transform .15s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--brand);color:white}
+.btn-primary:hover{background:var(--brand-dark)}
+.btn-secondary{background:#edf0f5;color:#29364a}
+.btn-secondary:hover{background:#e1e6ef}
+.btn-quiet{background:transparent;color:var(--brand);border:1px solid #e3c1ad}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.note{font-size:.84rem;color:var(--muted);margin:10px 2px 0}
+.hidden{display:none!important}
+.quiz-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:16px 0}
+.quiz-title{font-weight:900;font-size:1.05rem}
+.quiz-actions{display:flex;gap:8px;align-items:center}
+.progress-area{background:white;border:1px solid var(--line);padding:15px 18px;border-radius:16px;margin-bottom:14px}
+.progress-label{display:flex;justify-content:space-between;gap:12px;font-size:.84rem;color:var(--muted);font-weight:750;margin-bottom:8px}
+.progress-track{height:8px;border-radius:99px;background:#e9edf4;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#e99868);border-radius:99px;transition:width .2s}
+.question-card,.result-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(20px,4vw,34px)}
+.q-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:15px}
+.q-count{font-size:.82rem;font-weight:900;color:var(--brand);background:var(--brand-soft);border-radius:999px;padding:5px 10px}
+.q-topic{font-size:.82rem;color:var(--muted);font-weight:750}
+.question{font-size:clamp(1.15rem,2.5vw,1.52rem);line-height:1.38;font-weight:850;letter-spacing:-.022em;margin:0 0 22px}
+.options{display:grid;gap:10px}
+.option{display:grid;grid-template-columns:36px 1fr;align-items:start;gap:12px;width:100%;text-align:left;background:#fff;border:1.5px solid #d7dfe9;border-radius:14px;padding:13px 15px;color:var(--ink);line-height:1.48}
+.option:hover:not(:disabled){border-color:#d9a184;background:#fffbf8}
+.letter{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#edf1f6;color:#31425c;font-weight:900;font-size:.9rem}
+.option.chosen{border-color:var(--brand);background:#fff6f0}
+.option.chosen .letter{background:var(--brand);color:#fff}
+.option.correct{border-color:#55ad7c;background:var(--good-bg)}
+.option.correct .letter{background:var(--good);color:#fff}
+.option.incorrect{border-color:#e38a93;background:var(--bad-bg)}
+.option.incorrect .letter{background:var(--bad);color:#fff}
+.option:disabled{cursor:default;opacity:1}
+.feedback{margin-top:18px;border-radius:14px;padding:16px 18px;border:1px solid var(--line)}
+.feedback.good{background:var(--good-bg);border-color:#a6dbbc}
+.feedback.bad{background:var(--bad-bg);border-color:#f0b4b9}
+.feedback-title{font-weight:900;margin-bottom:5px}
+.feedback.good .feedback-title{color:var(--good)}
+.feedback.bad .feedback-title{color:var(--bad)}
+.feedback p{margin:0;color:#29364a}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.small-muted{font-size:.82rem;color:var(--muted)}
+.result-card{text-align:center;padding:clamp(25px,5vw,52px)}
+.result-icon{margin:0 auto 15px;width:74px;height:74px;display:grid;place-items:center;border-radius:24px;background:#e8f7ef;color:var(--good);font-size:36px}
+.result-card h2{font-size:clamp(1.7rem,4vw,2.4rem);margin:0 0 7px;letter-spacing:-.04em}
+.result-score{font-size:clamp(2.5rem,8vw,4.4rem);font-weight:950;letter-spacing:-.06em;color:var(--brand);line-height:1.2;margin:14px 0 5px}
+.result-sub{color:var(--muted);margin:0 auto;max-width:560px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:600px;margin:25px auto}
+.stat{padding:15px 8px;background:#f5f7fb;border:1px solid var(--line);border-radius:14px}
+.stat strong{display:block;font-size:1.35rem}
+.stat span{font-size:.8rem;color:var(--muted)}
+.result-buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.result-detail{text-align:left;margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+.result-detail summary{cursor:pointer;font-weight:850}
+.result-detail p{font-size:.9rem;color:var(--muted)}
+.footer{padding:23px 4px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:.8rem}
+@media(max-width:650px){
+ .wrap{padding:15px 12px 28px}.topbar{align-items:flex-start}.credit-top{max-width:150px;font-size:.75rem}
+ .topic-grid{grid-template-columns:1fr}.setup{align-items:stretch}.field{min-width:100%}.setup .btn{width:100%}
+ .quiz-head{align-items:flex-start}.quiz-actions{flex-wrap:wrap;justify-content:flex-end}.btn{padding:10px 13px}
+ .question-card{padding:19px}.option{padding:12px}.quiz-footer .btn{flex:1}
+ .stats{gap:7px}.stat{padding:12px 5px}.footer{display:block}.footer span{display:block;margin-top:4px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">F</div>
+    <div><div class="eyebrow">Cuestionario interactivo</div><div>Formación y Orientación Laboral</div></div>
+  </div>
+  <div class="credit-top">Tema 7 · El contrato de trabajo</div>
+</header>
+
+<main>
+<section id="home">
+  <div class="hero">
+    <span class="pill">✦ 150 preguntas · Test autocorregible</span>
+    <h1>El contrato de trabajo</h1>
+    <p>Evalúa tu comprensión de los elementos del contrato, las modalidades de contratación, los derechos y obligaciones que aparecen en el tema y las situaciones prácticas de la contratación laboral.</p>
+    <div class="credit-main">Elaboración de Susana Felipe Ortiz con ayuda de la IA</div>
+  </div>
+
+  <h2 class="section-heading">1. Elige el epígrafe que quieres practicar</h2>
+  <div id="topicGrid" class="topic-grid" aria-label="Epígrafes del tema"></div>
+
+  <div class="setup">
+    <div class="field">
+      <label for="questionCount">Número de preguntas</label>
+      <select id="questionCount">
+        <option value="5">5 preguntas</option>
+        <option value="10" selected>10 preguntas</option>
+        <option value="15">15 preguntas</option>
+        <option value="20">20 preguntas</option>
+        <option value="25">25 preguntas</option>
+        <option value="30">30 preguntas</option>
+        <option value="all">Todas las preguntas del epígrafe</option>
+      </select>
+    </div>
+    <button id="startBtn" class="btn btn-primary" type="button">Comenzar test <span aria-hidden="true">→</span></button>
+  </div>
+  <p class="note">Las preguntas y las opciones se mezclan en cada intento. Los datos y límites numéricos relativos a la contratación se han elaborado siguiendo el material adjunto.</p>
+</section>
+
+<section id="quiz" class="hidden" aria-labelledby="quizTitle">
+  <div class="quiz-head">
+    <div><div class="eyebrow">Test en curso</div><div id="quizTitle" class="quiz-title"></div></div>
+    <div class="quiz-actions">
+      <button id="restartThemeBtn" class="btn btn-secondary" type="button">↻ Reiniciar</button>
+      <button id="homeBtn" class="btn btn-quiet" type="button">⌂ Volver al inicio</button>
+    </div>
+  </div>
+  <div class="progress-area">
+    <div class="progress-label"><span id="progressText">Pregunta 1 de 10</span><span id="scoreLive">Aciertos: 0</span></div>
+    <div class="progress-track" id="progressBar" role="progressbar" aria-label="Progreso del test" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" class="progress-fill"></div></div>
+  </div>
+  <article class="question-card">
+    <div class="q-meta"><span id="qCount" class="q-count"></span><span id="qTopic" class="q-topic"></span></div>
+    <h2 id="questionText" class="question"></h2>
+    <div id="options" class="options" role="group" aria-label="Opciones de respuesta"></div>
+    <div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div>
+    <div class="quiz-footer">
+      <span id="hint" class="small-muted">Selecciona la opción que consideres correcta.</span>
+      <div>
+        <button id="checkBtn" class="btn btn-primary" type="button" disabled>Comprobar respuesta</button>
+        <button id="nextBtn" class="btn btn-primary hidden" type="button">Siguiente pregunta →</button>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="results" class="hidden" aria-labelledby="resultTitle">
+  <div class="result-card">
+    <div class="result-icon" aria-hidden="true">✓</div>
+    <div class="eyebrow">Práctica finalizada</div>
+    <h2 id="resultTitle">¡Test completado!</h2>
+    <div id="resultScore" class="result-score">0/10</div>
+    <p id="resultMessage" class="result-sub"></p>
+    <div id="resultStats" class="stats"></div>
+    <div class="result-buttons">
+      <button id="reviewBtn" class="btn btn-secondary" type="button">Revisar respuestas</button>
+      <button id="againBtn" class="btn btn-primary" type="button">Practicar otra vez</button>
+      <button id="resultsHomeBtn" class="btn btn-quiet" type="button">Volver al menú</button>
+    </div>
+    <details id="reviewPanel" class="result-detail hidden">
+      <summary>Ver resumen de respuestas y explicaciones</summary>
+      <div id="reviewList"></div>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><span>FOL · Tema 7: El contrato de trabajo</span><span>Herramienta de práctica y autoevaluación</span></footer>
+</div>
+
+<script>
+"use strict";
+
+const temas = [
+ {id:1,name:"Concepto, elementos y forma del contrato",desc:"Concepto, consentimiento, objeto, causa, capacidad, forma y contenido mínimo."},
+ {id:2,name:"Periodo de prueba y contratos indefinidos",desc:"Condiciones del periodo de prueba, contrato ordinario y fijo-discontinuo."},
+ {id:3,name:"Contratos temporales y estructurales",desc:"Reglas generales, circunstancias de la producción y sustitución."},
+ {id:4,name:"Contratos formativos",desc:"Formación en alternancia, práctica profesional y diferencias con la FCT."},
+ {id:5,name:"Tiempo parcial y contrato de relevo",desc:"Jornada, horas complementarias, jubilación parcial y relevista."},
+ {id:6,name:"Teletrabajo, contrato en grupo y TRADE",desc:"Trabajo a distancia, autonomía económicamente dependiente y otros contratos."},
+ {id:7,name:"ETT e incentivos a la contratación",desc:"Relación triangular, condiciones del trabajador cedido y bonificaciones."}
+];
+
+/* 
+Cada pregunta contiene: tema, enunciado, cuatro opciones, índice de la correcta y explicación.
+El banco está organizado en siete bloques que siguen los epígrafes del material adjunto.
+*/
+const banco = [
+/* TEMA 1: CONCEPTO, ELEMENTOS, SUJETOS, FORMA Y CONTENIDO (25) */
+[1,"¿Qué define mejor el contrato de trabajo según el tema?",["Un acuerdo por el que una persona realiza servicios profesionales por cuenta propia y asume directamente el riesgo de su actividad.","Un acuerdo entre empresario y trabajador por el que este presta servicios por cuenta ajena y bajo dirección empresarial a cambio de salario.","Un documento administrativo que registra exclusivamente las horas realizadas por una persona trabajadora.","Un pacto entre dos empresas para repartirse los beneficios de una actividad económica."],1,"El contrato de trabajo es un acuerdo entre empresario y trabajador por el que el trabajador presta determinados servicios por cuenta del empresario y bajo su dirección a cambio de una retribución."],
+[1,"¿Cuál es la finalidad principal de los elementos esenciales del contrato?",["Establecer las condiciones mínimas para que el contrato de trabajo pueda considerarse válido.","Determinar exclusivamente la duración de los contratos temporales.","Sustituir la obligación de identificar a las partes del contrato.","Definir las bonificaciones económicas que recibe la empresa por contratar."],0,"Los elementos esenciales son las condiciones mínimas necesarias para que un contrato de trabajo sea válido."],
+[1,"¿Qué significa el consentimiento como elemento esencial?",["La descripción de las tareas que debe ejecutar el trabajador.","La razón económica por la que el empresario contrata.","La identificación del salario que recibirá el trabajador.","La manifestación de voluntad de las partes de establecer una relación contractual."],3,"El consentimiento es la manifestación de voluntad de ambas partes de establecer un contrato de trabajo."],
+[1,"¿Qué condición debe cumplir el objeto del contrato?",["Debe ser exclusivamente una tarea manual y realizarse en el centro de la empresa.","Debe consistir siempre en una prestación a jornada completa.","Debe ser posible, lícito y estar determinado.","Debe incluir una fecha de finalización, aunque el contrato sea indefinido."],2,"El objeto identifica los bienes o servicios que intercambian las partes, como el trabajo que se realizará o la jornada, y debe ser posible, lícito y determinado."],
+[1,"¿Qué expresa la causa del contrato de trabajo?",["El motivo por el que se realiza el contrato, relacionado con la prestación y la retribución.","La fecha exacta en la que debe formalizarse el contrato por escrito.","La identidad del profesional que lleva la contabilidad de la empresa.","El número de horas complementarias que puede realizar el trabajador."],0,"La causa es el motivo por el que se realiza el contrato: el empresario recibe los frutos del trabajo y el trabajador obtiene el salario."],
+[1,"¿Qué recibe el empresario a cambio de la retribución que paga?",["La propiedad de los documentos personales del trabajador.","La posibilidad de evitar todas las obligaciones del Estatuto de los Trabajadores.","Los frutos del trabajo que realiza el trabajador por cuenta ajena.","La garantía de que el trabajador permanecerá siempre en la empresa."],2,"Para el empresario, la causa consiste en obtener los frutos del trabajo; para el trabajador, consiste en cobrar el salario."],
+[1,"¿Cómo define el tema al trabajador que celebra un contrato laboral?",["Una persona física que presta servicios retribuidos bajo las órdenes del empresario a cambio de un salario.","Cualquier entidad jurídica que adquiere servicios de una empresa.","Un profesional que siempre organiza la actividad por cuenta propia y asume el riesgo económico.","Una persona que presta servicios únicamente cuando recibe una compensación no económica."],0,"El trabajador es una persona física que presta servicios retribuidos por cuenta ajena y a las órdenes del empresario."],
+[1,"¿Quién puede ser empresario a efectos del contrato de trabajo según el tema?",["Únicamente una sociedad anónima inscrita en el Registro Mercantil.","Solo una persona física mayor de edad.","Un organismo público, pero nunca una comunidad de bienes.","Una persona física, una persona jurídica o una comunidad de bienes que recibe los frutos del trabajo."],3,"El manual identifica como empresario a una persona física, jurídica o comunidad de bienes que recibe los frutos del trabajo a cambio de salario."],
+[1,"¿Qué regla general de capacidad de contratación laboral recoge el material para las personas trabajadoras?",["Solo las personas mayores de 21 años pueden contratar por sí mismas.","Pueden contratar las personas mayores de 18 años y determinados mayores de 16 años que cumplan las condiciones señaladas.","Todos los menores de 18 años pueden contratar sin autorización, con independencia de su situación.","Las personas mayores de 16 años pueden contratar únicamente si están matriculadas en formación profesional."],1,"El tema recoge que pueden contratar las personas mayores de 18 años y, entre los mayores de 16 y menores de 18, los supuestos permitidos por la legislación y las condiciones indicadas."],
+[1,"¿En qué supuesto contempla el manual que una persona de entre 16 y 18 años pueda trabajar?",["Siempre que lo autorice verbalmente cualquier trabajador de la empresa.","Únicamente cuando firme un contrato indefinido a tiempo parcial.","Cuando cumpla las condiciones indicadas para trabajar con autorización o consentimiento de sus representantes, según el supuesto.","Solo cuando exista una autorización de la Inspección para trabajar durante el periodo de prueba."],2,"El documento describe supuestos para los mayores de 16 y menores de 18, como la vida independiente con consentimiento o la autorización de los padres o de quienes los tengan a su cargo."],
+[1,"¿Qué regla recoge el tema respecto a los menores de 16 años?",["No pueden trabajar, salvo en espectáculos públicos con autorización previa de la autoridad laboral competente.","Pueden trabajar en cualquier actividad si el contrato se firma por escrito.","Pueden celebrar un contrato ordinario si la jornada no supera cuatro semanas.","Pueden trabajar sin restricciones cuando el empresario sea una persona física."],0,"El material señala que los menores de 16 años no pueden trabajar, salvo en espectáculos públicos y con autorización previa de la autoridad laboral competente."],
+[1,"¿Qué significa la emancipación mencionada en el tema?",["Una autorización empresarial para que el trabajador pueda elegir su horario.","Un permiso que transforma el contrato temporal en indefinido.","Un acuerdo privado que elimina la necesidad de contar con consentimiento en todos los casos.","Una situación jurídica que capacita al menor para ejercer derechos y obligaciones como si fuera mayor de edad, en los términos indicados."],3,"El manual explica la emancipación como una resolución o situación jurídica que permite ejercer derechos y obligaciones y disponer del patrimonio como si se fuera mayor de edad."],
+[1,"¿Qué requisito general menciona el material para que trabajadores extranjeros puedan trabajar en España?",["Tener una oferta indefinida y un periodo de prueba de seis meses.","Disponer de permiso de residencia y de trabajo, cuando así corresponda.","Acreditar que ningún ciudadano de la Unión Europea desea el puesto.","Realizar previamente un contrato de formación en alternancia."],1,"El texto indica que los trabajadores extranjeros necesitan poseer los permisos de residencia y trabajo para poder trabajar en el país, con el tratamiento particular que describe para ciudadanos de la UE."],
+[1,"¿Qué caracteriza a la forma escrita del contrato?",["Es obligatoria en todos los contratos, sin ninguna excepción según el texto.","Solo puede utilizarse para los contratos de trabajo en grupo.","Es obligatoria cuando lo establece la ley y, si se incumple ese requisito, el contrato puede presumirse indefinido y a jornada completa salvo prueba en contrario.","Solo puede emplearse en contratos de duración inferior a cuatro semanas."],2,"Según el material, cuando la ley exige forma escrita y se incumple, se presume que el contrato es indefinido y a jornada completa, salvo prueba en contrario."],
+[1,"¿Qué contratos pueden celebrarse verbalmente conforme al texto del manual?",["Los contratos indefinidos ordinarios y los de circunstancias de la producción a tiempo completo inferiores a cuatro semanas.","Todos los contratos de sustitución y los contratos formativos.","Todos los contratos temporales, sin tener en cuenta su duración o modalidad.","Solo los contratos fijos-discontinuos cuando se realicen en temporadas estacionales."],0,"El manual indica que pueden concertarse verbalmente los contratos indefinidos ordinarios y los contratos por circunstancias de la producción a tiempo completo inferiores a cuatro semanas."],
+[1,"Una relación laboral se acuerda verbalmente y cumple las condiciones para esa forma. ¿Cuál es la conclusión que corresponde al tema?",["No existe relación laboral hasta que se firma un documento oficial.","El contrato únicamente existe cuando lo registra el archivo clínico del SEPE.","La relación solo será laboral si dura más de cuatro semanas.","Puede existir contrato de trabajo aunque no haya un documento escrito que recoja el acuerdo."],3,"El texto distingue entre la existencia de la relación laboral y la existencia de un documento escrito: puede haber contrato aunque el acuerdo sea verbal."],
+[1,"Si una relación laboral supera cuatro semanas y el contrato no se formalizó por escrito, ¿qué obligación informativa recoge el texto?",["El trabajador debe redactar y registrar personalmente el contrato.","El empresario debe informar por escrito de los elementos esenciales y condiciones principales en el plazo de dos meses.","La empresa debe entregar el informe de alta antes de que termine el primer mes.","El empresario puede omitir toda información si el trabajador conoce sus funciones."],1,"Cuando la relación supera cuatro semanas y no se formaliza por escrito, el manual señala que el empresario debe informar por escrito en el plazo de dos meses sobre los elementos esenciales y las principales condiciones."],
+[1,"¿Qué condición formal debe cumplir el contrato celebrado por escrito que destaca el tema?",["Basta con la firma del empresario y no es necesario registrar el documento.","Debe firmarlo exclusivamente el trabajador antes de comenzar a trabajar.","Debe estar firmado por las partes y registrarse en la Oficina del Servicio Público de Empleo en el plazo indicado.","Debe ser aprobado previamente por el servicio de prevención de riesgos laborales."],2,"El material establece que el contrato escrito ha de firmarse por las partes y registrarse en el plazo máximo de diez días."],
+[1,"¿Cuál de estos datos forma parte del contenido mínimo del contrato de trabajo?",["La identidad de las partes contratantes.","El nombre de todos los clientes de la empresa.","El número de documentos que se archivan durante el año.","La relación de proveedores que suministran a la empresa."],0,"La identidad del empresario y del trabajador figura entre los elementos mínimos del contrato."],
+[1,"¿Qué información debe constar sobre la duración del contrato cuando este sea temporal?",["Únicamente el salario del último mes de trabajo.","La lista de contratos anteriores celebrados por el trabajador.","La duración de las vacaciones del personal de toda la empresa.","La fecha de comienzo de la relación y la duración previsible del contrato temporal."],3,"El contenido mínimo incluye la fecha de comienzo y, si el contrato es temporal, su duración previsible."],
+[1,"¿Qué información sobre el lugar de trabajo menciona el manual?",["Solo la dirección postal de la residencia del empresario.","El domicilio social de la empresa y el centro de trabajo donde se prestarán los servicios.","Únicamente el nombre de la provincia donde se firmó el contrato.","El domicilio de la oficina de empleo donde se registra el contrato."],1,"El documento debe identificar el domicilio social de la empresa y el centro de trabajo donde prestará sus servicios el trabajador."],
+[1,"¿Qué debe especificarse acerca del puesto de trabajo?",["Solo el departamento en el que se encuentra el equipo informático.","El número de compañeros que componen el turno de tarde.","El grupo profesional del puesto que desempeñará el trabajador.","La categoría profesional de todos los trabajadores de la empresa."],2,"El manual incluye el grupo profesional del puesto que va a desempeñar el trabajador entre los datos mínimos."],
+[1,"¿Qué debe figurar en el contrato sobre la retribución?",["El salario base, los complementos salariales y la periodicidad del pago.","Solo la cantidad neta del primer mes, sin más detalles.","El coste total de Seguridad Social de toda la plantilla.","La retribución del puesto de trabajo más elevado de la empresa."],0,"El contrato debe incluir el salario base, los complementos salariales y la periodicidad de pago."],
+[1,"¿Qué información laboral mínima debe quedar reflejada además del salario?",["La identidad de los clientes y el historial comercial del empresario.","La lista de todos los contratos que la empresa ha realizado durante el año.","La duración de los turnos de todos los trabajadores de la provincia.","La duración y distribución de la jornada, las vacaciones y, cuando corresponda, los plazos de preaviso."],3,"El contenido mínimo comprende la jornada ordinaria y su distribución, las vacaciones y los plazos de preaviso que deban respetar las partes."],
+[1,"¿Qué documentación debe entregar el empresario al trabajador y a la representación legal, conforme al material?",["Únicamente un resumen del salario pactado.","Una copia del contrato de trabajo.","Solo el número asignado a la historia laboral del trabajador.","Un documento con las bonificaciones que recibe la empresa."],1,"El material señala que el empresario debe entregar una copia del contrato al trabajador y a los representantes de los trabajadores."],
+
+/* TEMA 2: PERIODO DE PRUEBA Y CONTRATOS INDEFINIDOS (20) */
+
+[2,"¿Cuál es la finalidad del periodo de prueba?",["Permitir que solo el empresario compruebe si el trabajador puede adaptarse al puesto.","Establecer una fase sin derechos laborales ni obligación de retribución.","Permitir a las partes comprobar si el contrato se ajusta a sus intereses.","Prolongar automáticamente la duración del contrato temporal."],2,"El periodo de prueba permite que tanto empresario como trabajador comprueben si el contrato se ajusta a sus intereses."],
+[2,"¿Qué carácter tiene el periodo de prueba según el tema?",["Es opcional; si se acuerda, debe constar por escrito y especificar su duración exacta.","Es obligatorio en cualquier contrato indefinido y debe ser verbal.","Solo puede incorporarse cuando lo solicita la representación sindical.","Se aplica automáticamente durante todo contrato temporal."],0,"El periodo de prueba es optativo, pero si las partes lo acuerdan debe reflejarse por escrito y especificar su duración."],
+[2,"¿Cómo computa el periodo de prueba a efectos de antigüedad?",["Solo computa si el contrato se transforma en indefinido.","Se cuenta desde la fecha en la que se comunica el alta a la Seguridad Social.","Se excluye del tiempo de prestación laboral para cualquier cálculo.","Se computa a efectos de antigüedad."],3,"El material indica expresamente que la duración del periodo de prueba se computa a efectos de antigüedad."],
+[2,"Según la tabla del manual, si el convenio no establece otra regla, ¿qué duración máxima de prueba se recoge para técnicos titulados?",["Dos meses.","Hasta seis meses.","Un año.","Tres meses en cualquier empresa."],1,"La tabla del material señala hasta seis meses para técnicos titulados, cuando se aplica el límite del Estatuto de los Trabajadores descrito en el texto."],
+[2,"Según la tabla del libro, para técnicos no titulados en empresas de más de 25 trabajadores, ¿qué límite general de prueba se recoge?",["Hasta seis meses.","Un mes en todo caso.","Hasta dos meses.","Hasta cuatro meses."],2,"La tabla del manual recoge hasta dos meses para técnicos no titulados si la empresa tiene más de 25 trabajadores."],
+[2,"¿Qué límite de periodo de prueba señala la tabla para técnicos no titulados en empresas de menos de 25 trabajadores?",["Hasta tres meses.","Hasta seis meses.","Un año, cuando exista formación específica.","Hasta cuatro meses."],0,"Según la tabla del material, el límite es de hasta tres meses para técnicos no titulados cuando la empresa tiene menos de 25 trabajadores."],
+[2,"¿Qué particularidad indica el manual para el contrato para la obtención de la práctica profesional?",["Puede tener un periodo de prueba de hasta seis meses en cualquier supuesto.","El periodo de prueba se establece siempre de forma verbal.","No puede pactarse periodo de prueba en los contratos formativos.","El periodo de prueba máximo señalado es de un mes, salvo lo dispuesto en convenio colectivo."],3,"La tabla recoge un periodo de prueba máximo de un mes para el contrato de obtención de práctica profesional, con la salvedad relativa al convenio colectivo."],
+[2,"¿Qué ocurre con los derechos del trabajador durante el periodo de prueba?",["Quedan suspendidos hasta que la empresa confirme su continuidad.","Tiene los mismos derechos y obligaciones derivados de su puesto que el trabajador fijo.","Solo conserva el derecho a recibir formación, pero no el salario.","Puede trabajar sin que se registre la actividad realizada."],1,"Durante el periodo de prueba, el trabajador conserva los derechos y obligaciones derivados de su puesto como si fuera fijo."],
+[2,"¿Qué posibilidad recoge el tema durante el periodo de prueba?",["Finalizar la relación únicamente por una causa disciplinaria grave acreditada.","Finalizar la relación solo con un preaviso de quince días.","Dar por terminada la relación laboral sin necesidad de causa, preaviso ni indemnización, en los términos expuestos por el manual.","Dar por terminada la relación exclusivamente cuando lo autorice un juez."],2,"El texto señala que durante el periodo de prueba cualquiera de las partes puede finalizar la relación sin necesidad de causa, preaviso ni derecho a indemnización; el trabajador conserva el derecho al finiquito."],
+[2,"¿Cuál es una característica del contrato indefinido ordinario?",["No establece una fecha de finalización de la relación laboral.","Se concierta exclusivamente para trabajar durante una campaña estacional.","Solo puede formalizarse verbalmente.","Exige que la empresa contrate a la persona a través de una ETT."],0,"El indefinido ordinario es el contrato tipo en el que se establece el comienzo de la relación, pero no una fecha de finalización."],
+[2,"¿Qué modalidad de contrato indefinido se identifica con actividad estacional o intermitente?",["El contrato de sustitución.","El contrato de relevo temporal.","El contrato por circunstancias de la producción.","El contrato fijo-discontinuo."],3,"El contrato fijo-discontinuo es indefinido y se utiliza para trabajos estacionales o actividades de prestación intermitente."],
+[2,"¿Qué debe reflejar un contrato fijo-discontinuo según el manual?",["Únicamente el salario, sin identificar cuándo se prestará el servicio.","Los elementos esenciales de la actividad, su duración, la jornada, su distribución horaria y la forma de llamamiento.","Solo la fecha de la última jornada trabajada.","La relación de empleados que ocupan puestos indefinidos ordinarios."],1,"El texto indica que el fijo-discontinuo debe celebrarse por escrito y reflejar esos aspectos de la actividad y el llamamiento."],
+[2,"¿Cómo se calcula la antigüedad en el contrato fijo-discontinuo según el tema?",["Solo por los días efectivamente trabajados en una temporada.","Desde la última reincorporación, sin considerar temporadas anteriores.","Teniendo en cuenta toda la duración de la relación laboral, y no únicamente el tiempo de servicios efectivos.","Según el número de contratos temporales que haya tenido la persona."],2,"El manual indica que la antigüedad se calcula durante toda la duración de la relación laboral, no solo por el tiempo efectivamente trabajado."],
+[2,"¿Qué ejemplo es coherente con la función del contrato fijo-discontinuo?",["Contratar a personal para trabajar en la recepción de un hotel durante las temporadas recurrentes de esquí.","Cubrir durante dos semanas a una persona en incapacidad temporal.","Contratar a una persona sin cualificación para alternar empleo y formación.","Contratar a alguien para cubrir un aumento imprevisible y aislado de pedidos durante unos días."],0,"El manual usa como ejemplo un puesto de hotel vinculado a la temporada de esquí, cuyo trabajo se repite en periodos estacionales."],
+[2,"¿Qué ventaja social se asocia a la contratación indefinida en el material?",["La empresa no debe entregar copia del contrato al trabajador.","La extinción nunca puede generar indemnización.","El trabajador deja de tener derecho a vacaciones.","Proporciona mayor estabilidad y puede vincularse a incentivos para la empresa."],3,"El tema destaca la estabilidad del empleo indefinido y los posibles incentivos a la contratación para la empresa."],
+[2,"Según los datos históricos que expone el manual, ¿cómo se calcula la indemnización por despido improcedente del contrato indefinido ordinario para contratos posteriores a febrero de 2012?",["45 días de salario por año trabajado, con un máximo de 42 mensualidades.","33 días de salario por año trabajado, con un máximo de 24 mensualidades.","12 días de salario por año trabajado, con un máximo de 12 mensualidades.","20 días de salario por año trabajado, con un máximo de 18 mensualidades."],1,"El texto del manual recoge 33 días de salario por año trabajado, con un máximo de 24 mensualidades, para el supuesto de contratos posteriores a febrero de 2012 que menciona."],
+[2,"¿Qué objetivo atribuye el manual a las bonificaciones y deducciones ligadas a la contratación indefinida?",["Garantizar que todos los contratos temporales se conviertan en formativos.","Eliminar todos los requisitos de capacidad para contratar.","Incentivar la contratación de determinados colectivos y la transformación de contratos temporales en indefinidos.","Sustituir la obligación de cotizar a la Seguridad Social por una exención permanente."],2,"El material señala que el Estado concede bonificaciones y deducciones cuando se contrata a ciertos colectivos o se transforman contratos temporales en indefinidos."],
+[2,"¿Qué puede pactarse en un contrato, además del contenido mínimo obligatorio?",["Cláusulas adicionales, como periodo de prueba, no competencia, permanencia y horas complementarias cuando proceda.","Cualquier cláusula que permita al trabajador renunciar a los derechos mínimos de la normativa.","Una cláusula que sustituya el consentimiento de una de las partes.","Una disposición que elimine automáticamente el deber de registrar el contrato cuando sea obligatorio."],0,"El contrato puede incorporar otros pactos, entre los ejemplos del texto figuran periodo de prueba, no competencia, permanencia y horas complementarias en tiempo parcial."],
+[2,"¿Qué finalidad tiene el pacto de no competencia que describe el manual?",["Permitir que el empresario se apropie de cualquier salario futuro del trabajador.","Impedir que el trabajador realice su actividad en otra empresa mientras está en periodo de prueba.","Obligar al trabajador a continuar en la empresa, sin excepción, durante toda su vida laboral.","Impedir determinadas actividades profesionales tras extinguirse el contrato, con compensación económica y los límites indicados."],3,"El manual describe el pacto de no competencia posterior a la relación laboral con compensación económica y un límite máximo temporal."],
+[2,"¿Cuándo menciona el tema un pacto de permanencia?",["Siempre que el contrato dure menos de cuatro semanas.","Cuando la empresa ha pagado una formación específica y se pacta una permanencia con el límite temporal indicado.","Cuando el trabajador realiza cualquier curso por iniciativa propia fuera de la empresa.","Cuando el empresario decide transformar un contrato de relevo en una cita de consulta."],1,"El texto indica que el pacto de permanencia puede establecerse cuando la empresa ha financiado formación específica, con un máximo de dos años según el material."],
+
+/* TEMA 3: CONTRATOS TEMPORALES Y ESTRUCTURALES (25) */
+[3,"¿Cuál es la finalidad general de los contratos temporales?",["Establecer una relación laboral por un tiempo concreto, vinculado a la modalidad y su causa.","Crear una relación laboral que no puede tener fecha de finalización.","Sustituir cualquier necesidad estable de la empresa sin justificarla.","Garantizar al trabajador un puesto indefinido cuando termine cualquier proyecto."],0,"El tema define los contratos temporales como aquellos cuyo objeto es establecer una relación laboral por un tiempo concreto."],
+[3,"¿Qué regla general sobre la forma de los contratos temporales recoge el manual?",["Todos pueden celebrarse verbalmente si el empresario lo acepta.","Solo los contratos de sustitución deben formalizarse por escrito.","Todos deben realizarse por escrito salvo los supuestos de duración inferior a cuatro semanas que describe el texto.","La forma escrita se exige exclusivamente a los contratos a tiempo parcial."],2,"El manual establece la forma escrita para los contratos temporales, salvo los de duración inferior a cuatro semanas según la regla descrita."],
+[3,"Si un contrato temporal tiene un máximo legal y se pactó inicialmente por un periodo inferior, ¿qué prevé el texto cuando el trabajador continúa y no existe denuncia ni prórroga expresa?",["Se transforma inmediatamente en contrato de formación.","Puede entenderse prorrogado hasta su duración máxima.","Se convierte en contrato de relevo por decisión del trabajador.","Debe darse por extinguido en todos los casos."],1,"Según el material, cuando no hay denuncia ni prórroga expresa y se continúa trabajando, puede entenderse prorrogado hasta la duración máxima prevista."],
+[3,"¿Qué consecuencia describe el tema si, una vez agotada la duración máxima del contrato temporal, el trabajador sigue trabajando?",["El contrato debe transformarse en fijo-discontinuo sin excepción.","La relación laboral se considera automáticamente suspendida.","Se renueva por otro periodo máximo idéntico de forma automática.","Se presume transformado en indefinido, salvo que el empresario demuestre la naturaleza temporal en los términos que indica el texto."],3,"El manual indica que, agotada la duración máxima y continuando la prestación, se considera transformado tácitamente en indefinido salvo prueba en contrario."],
+[3,"¿Qué supuesto de encadenamiento temporal recoge el material?",["Más de 18 meses de contratación temporal dentro de un periodo de 24 meses, para la misma empresa o grupo en los términos señalados.","Dos contratos de menos de cuatro semanas, con independencia de cualquier otra circunstancia.","Una relación laboral indefinida seguida de un periodo de prueba.","Cualquier contrato temporal que se prorrogue una vez."],0,"El texto recoge la adquisición de la condición de trabajador fijo tras superar 18 meses en un periodo de 24 bajo las condiciones y excepciones que detalla."],
+[3,"¿Qué colectivos contractuales exceptúa el texto de la regla de encadenamiento que presenta?",["Todos los contratos temporales por circunstancias de la producción.","Los contratos indefinidos ordinarios y los fijos-discontinuos.","Los contratos formativos y los contratos de sustitución.","Los contratos escritos cuya duración inicial sea inferior a un mes."],2,"El material señala que el supuesto de encadenamiento indicado exceptúa los contratos formativos y los de sustitución."],
+[3,"¿Qué otra circunstancia puede motivar la transformación en indefinido según el texto?",["Que el contrato incluya una distribución de jornada parcial.","Que no se haya dado de alta al trabajador en la Seguridad Social o exista fraude de ley en los supuestos que recoge el manual.","Que la empresa entregue una copia al trabajador dentro del plazo indicado.","Que el contrato haya sido concertado con una persona mayor de edad."],1,"El texto recoge la falta de alta en Seguridad Social, el fraude de ley o la falta de forma escrita cuando es obligatoria como supuestos relacionados con la transformación en indefinido."],
+[3,"¿Qué preaviso indica el manual para extinguir los contratos temporales de más de un año al finalizar su duración?",["Tres días en todos los casos.","Un mes, solo si lo solicita la representación de los trabajadores.","No se requiere preaviso en ninguna modalidad temporal.","Quince días de antelación, según el material."],3,"El tema señala que, en los contratos temporales de más de un año, las partes deben preavisar con quince días la decisión de extinguir el contrato."],
+[3,"¿Qué regla específica de cotización recoge el material para contratos temporales inferiores a 30 días?",["Un incremento en la cotización por contingencias comunes equivalente al triple de la base mínima diaria del grupo de cotización 8.","Una exención completa de cotizaciones durante el primer mes.","Una reducción de la cotización empresarial a la mitad de la base mínima diaria.","La obligación de cotizar como si se tratara de un contrato indefinido de jornada completa durante un año."],0,"El manual indica un incremento de cotización por contingencias comunes para contratos temporales de menos de 30 días en los términos numéricos que recoge."],
+[3,"¿Qué dos causas estructurales recoge el manual para celebrar contratos de duración determinada?",["La finalización de un periodo de prueba y la obtención de una titulación.","La decisión del trabajador de solicitar vacaciones y el acuerdo verbal de las partes.","Las circunstancias de la producción y la sustitución de una persona trabajadora.","La jubilación ordinaria y la contratación por parte de una ETT, sin más requisitos."],2,"Según el artículo 15 que reproduce el tema, la duración determinada puede celebrarse por circunstancias de la producción o por sustitución."],
+[3,"¿Qué debe justificar el contrato temporal estructural?",["Solo el nombre de la persona que realizará las tareas.","La causa de temporalidad y la duración prevista de la relación.","Únicamente el salario del trabajador y el convenio colectivo.","La duración de las vacaciones de toda la plantilla."],1,"El tema expresa que la temporalidad debe estar justificada, especificando tanto la causa como la duración prevista."],
+[3,"¿Qué describe el manual como circunstancia de la producción imprevisible?",["Una necesidad que forma parte del calendario estacional y se repite exactamente todos los años.","Una vacante definitiva de un puesto cuya selección está pendiente.","La reducción de jornada de una persona con reserva de puesto.","Un incremento ocasional o una oscilación que provoca un desajuste temporal entre empleo disponible y necesidad de mano de obra."],3,"El texto define la circunstancia de producción como incremento ocasional e imprevisible u oscilación que genera un desajuste temporal entre empleo estable disponible y el requerido."],
+[3,"¿Qué duración máxima recoge el manual para un contrato por circunstancias imprevisibles, si se aplica la regla general de su cuadro?",["Seis meses en un periodo de referencia de doce meses, con posibilidad de ampliación sectorial hasta un año según el texto.","Noventa días consecutivos, sin posibilidad de regulación sectorial.","Dos años, con independencia de los motivos que lo causen.","Un mes, salvo acuerdo individual del trabajador."],0,"El cuadro del material recoge un máximo de seis meses dentro de un periodo de referencia de doce meses y la posibilidad de ampliación por convenio sectorial hasta un año."],
+[3,"¿Qué regla presenta el manual para situaciones ocasionales previsibles de duración reducida?",["Pueden utilizarse sin limitación de días durante todo el año natural.","Se convierten automáticamente en contratos fijos-discontinuos.","Se limitan a 90 días no consecutivos en el año natural, según el texto.","Solo pueden utilizarse para cubrir a una persona que tiene reserva de puesto."],2,"El tema establece para situaciones previsibles ocasionales una duración máxima de 90 días no consecutivos dentro del año natural."],
+[3,"¿Qué comunicación empresarial se recoge para el uso de contratos por circunstancias previsibles?",["Comunicar cada contrato al Tribunal Supremo antes de empezar a trabajar.","Trasladar en el último trimestre a la representación legal una previsión anual de utilización de estos contratos.","Solicitar autorización individual a todos los trabajadores de la empresa.","Entregar las previsiones a la representación legal únicamente después de finalizar el año."],1,"El texto señala que las empresas trasladarán en el último trimestre a la representación legal una previsión anual del uso de estos contratos."],
+[3,"¿Cuál es el objetivo principal del contrato de sustitución?",["Cubrir un aumento de producción imprevisible con una necesidad temporal de pedidos.","Cubrir de forma permanente una actividad estacional que se repite cada año.","Contratar a una persona para que alterne trabajo remunerado con formación profesional.","Sustituir a una persona con derecho a reserva de puesto, complementar una jornada reducida o cubrir determinadas vacantes durante la selección."],3,"El manual recoge varias finalidades del contrato de sustitución: cubrir a trabajadores con reserva, completar una jornada reducida o cubrir vacantes durante la selección."],
+[3,"¿Qué particularidad puede tener el inicio del contrato de sustitución antes de la ausencia de la persona sustituida?",["Puede comenzar hasta 15 días antes para que el sustituto conozca las funciones, de acuerdo con el texto.","Solo puede iniciarse una vez que hayan pasado 15 días desde la ausencia.","Debe empezar exactamente el mismo día, sin posibilidad de solapamiento.","Debe comenzar cuando el proceso de selección del sustituto haya terminado."],0,"El material permite que el contrato comience hasta quince días antes de que la persona sustituida deje su puesto, para facilitar el conocimiento de las funciones."],
+[3,"¿Cuándo termina el contrato de sustitución según el ejemplo del libro?",["Cuando el sustituto alcanza un año de antigüedad, con independencia de la ausencia.","Cuando el trabajador sustituido deja de tener contrato en cualquier empresa.","Cuando se reincorpora la persona sustituida, vence la reserva o concluye el proceso de selección dentro del límite indicado.","Cuando la empresa convierte todos sus contratos en indefinidos."],2,"El tema indica que puede finalizar al reincorporarse la persona sustituida, vencer el plazo de reserva o concluir la selección, con el límite de duración que recoge."],
+[3,"¿Qué regla de jornada describe el manual para el contrato de sustitución?",["Siempre debe concertarse a jornada parcial.","Será a jornada completa, salvo supuestos como que la persona sustituida trabaje a tiempo parcial o se complemente una reducción de jornada.","Puede celebrarse sin jornada acordada si el motivo es una sustitución.","Debe copiar exactamente la distribución horaria del contrato de la persona que seleccionará al titular."],1,"El cuadro del manual señala la jornada completa como regla, salvo excepciones vinculadas a la jornada del sustituido o al complemento de jornada reducida."],
+[3,"¿Qué forma establece el tema para un contrato temporal por circunstancias de la producción cuya duración supera cuatro semanas?",["Debe celebrarse por escrito.","Puede celebrarse siempre verbalmente si existe urgencia.","Solo exige forma escrita cuando lo pide el trabajador al final del contrato.","Debe formalizarse con el formulario de alta voluntaria."],0,"El cuadro del tema señala forma escrita cuando la duración supera cuatro semanas o cuando se trata de tiempo parcial."],
+[3,"¿Qué diferencia de indemnización al finalizar el contrato presenta la tabla del tema entre circunstancias de producción y sustitución?",["Ambas modalidades carecen siempre de indemnización.","El contrato de sustitución genera una indemnización doble respecto al de producción.","El contrato por producción solo se indemniza si dura menos de 30 días.","El contrato por producción recoge doce días por año trabajado, mientras que el de sustitución carece de indemnización a su finalización según la tabla."],3,"La tabla del manual recoge doce días por año trabajado al finalizar el contrato por circunstancias de la producción y ausencia de indemnización al finalizar el contrato de sustitución."],
+[3,"¿Qué indicio es coherente con una contratación temporal estructural correctamente justificada?",["La empresa utiliza la modalidad temporal simplemente porque no desea comprometerse a una relación indefinida.","Se identifica una causa temporal concreta y se determina su duración prevista en el contrato.","Se establece una causa genérica sin especificar la necesidad que se pretende cubrir.","Se utiliza el mismo motivo para cubrir una necesidad estable y recurrente durante todo el año."],1,"El material recalca que la temporalidad debe estar justificada y especificar la causa y la duración prevista."],
+[3,"¿Qué consecuencia puede producir la continuación del trabajo después de agotarse el plazo máximo del contrato temporal?",["Que desaparezcan automáticamente las obligaciones de cotización.","Que el contrato se convierta necesariamente en un contrato en grupo.","Que se considere transformado tácitamente en indefinido, salvo prueba en contrario en los términos del tema.","Que el trabajador pierda la antigüedad generada durante el periodo temporal."],2,"El texto señala que, al agotarse la duración legal máxima y continuar el trabajo, se presume que el contrato se transforma tácitamente en indefinido salvo prueba en contrario."],
+[3,"Una empresa necesita cubrir una ausencia de una persona que conserva derecho a reserva de puesto. ¿Qué modalidad encaja con esa necesidad según el tema?",["Contrato por circunstancias de la producción.","Contrato fijo-discontinuo.","Contrato ordinario indefinido.","Contrato de sustitución."],3,"El contrato de sustitución tiene entre sus finalidades cubrir a trabajadores con derecho a reserva del puesto de trabajo."],
+[3,"¿Qué elemento permite distinguir una necesidad temporal de una necesidad estable en la contratación?",["Que exista una causa temporal concreta, delimitada y coherente con el trabajo que se va a realizar.","Que la empresa prefiera formalizar un contrato verbal.","Que el trabajador tenga experiencia profesional en el sector.","Que el salario sea diferente al de otros puestos de la empresa."],0,"El contrato temporal estructural requiere justificar la causa temporal y su duración prevista; no basta la preferencia de la empresa."],
+
+/* TEMA 4: CONTRATOS FORMATIVOS (25) */
+[4,"¿Cuál es la finalidad del contrato de formación en alternancia?",["Facilitar una jubilación parcial mediante la sustitución de una persona trabajadora.","Combinar una actividad laboral retribuida por cuenta ajena con procesos formativos.","Prolongar la experiencia de una persona que ya ha ocupado el mismo puesto sin formación.","Cubrir necesidades previsibles de producción durante un máximo de 90 días."],1,"El contrato de formación en alternancia busca compatibilizar empleo retribuido por cuenta ajena y formación profesional, universitaria o del catálogo formativo citado."],
+[4,"¿Qué condición formativa recoge el manual para acceder al contrato de formación en alternancia?",["Haber trabajado siempre en el puesto para adquirir experiencia práctica.","Disponer necesariamente de un título universitario de nivel superior.","Carecer de la cualificación profesional reconocida requerida para el contrato de obtención de práctica profesional, según el supuesto descrito.","Haber agotado previamente un contrato indefinido ordinario."],2,"El manual indica que está dirigido a personas que carecen de la cualificación reconocida requerida para concertar el contrato de obtención de práctica profesional."],
+[4,"¿Qué regla específica de edad recoge el manual para determinados contratos de formación en alternancia?",["Se limita a personas menores de 18 años.","Se limita a personas que hayan superado los 45 años.","No puede existir ningún límite de edad en ninguna circunstancia.","El límite máximo es de 30 años para los programas de certificados de profesionalidad de niveles 1 y 2 y ciertos programas de alternancia, con las excepciones indicadas."],3,"El texto recoge un límite máximo de 30 años para los supuestos formativos descritos y señala excepciones, como determinados programas y trabajadores con discapacidad."],
+[4,"¿Qué dispone el material sobre el periodo de prueba del contrato de formación en alternancia?",["No podrá pactarse periodo de prueba.","Será siempre de un mes, salvo acuerdo verbal.","Podrá alcanzar seis meses si el centro formativo lo autoriza.","Debe coincidir con la duración total de la formación teórica."],0,"La tabla del contrato de formación en alternancia indica expresamente que no podrá pactarse ningún periodo de prueba."],
+[4,"¿Qué ocurre con la duración del contrato de formación en alternancia a efectos de antigüedad?",["Solo se computa si se convierte en indefinido.","No se computa porque parte de la jornada es formativa.","Se computa a efectos de antigüedad.","Se computa únicamente el tiempo de trabajo efectivo, nunca la formación."],2,"El manual indica que la duración del contrato de formación en alternancia se computa a efectos de antigüedad."],
+[4,"¿Qué figuras de tutoría se recogen para el contrato de formación en alternancia?",["Un tutor designado exclusivamente por el trabajador.","Un tutor en la empresa y otro en el centro de formación.","Dos tutores pertenecientes necesariamente al mismo departamento de la empresa.","Un tutor de la Inspección y otro de la Oficina de Empleo."],1,"El texto señala que se designará un tutor en la empresa y otro en el centro de formación."],
+[4,"¿Cómo debe formalizarse el contrato de formación en alternancia según el material?",["De forma verbal, indicando únicamente salario y jornada.","Mediante un acuerdo privado con el centro educativo sin la empresa.","Mediante un contrato de tiempo parcial aunque el empleo sea completo.","Por escrito, indicando el contenido del contrato y el acuerdo relativo a la actividad formativa."],3,"El contrato de alternancia debe formalizarse por escrito e indicar su contenido y el acuerdo para la actividad formativa."],
+[4,"¿Qué intervalo de duración recoge la tabla del contrato de formación en alternancia?",["Mínimo de tres meses y máximo de dos años.","Mínimo de un mes y máximo de seis meses.","Mínimo de un año y máximo de tres años en todos los supuestos.","Mínimo de seis meses, sin posibilidad de alcanzar dos años."],0,"El material fija para el contrato de formación en alternancia una duración mínima de tres meses y máxima de dos años."],
+[4,"Una vez terminado un contrato de formación en alternancia, ¿qué limitación describe el manual?",["El trabajador no puede volver a trabajar en ninguna empresa del sector.","La empresa está obligada a contratarlo indefinidamente.","No puede volver a ser contratado en esa modalidad para la misma actividad ligada a la cualificación asociada, aunque puede realizar otra distinta.","No puede utilizar un contrato por circunstancias de la producción en el futuro."],2,"El texto señala que, finalizado el contrato, no puede volver a utilizarse esa modalidad para la misma actividad objeto de la cualificación, aunque sí para otra distinta."],
+[4,"¿Qué distribución máxima de trabajo efectivo y formación recoge la tabla para el contrato de alternancia?",["Trabajo efectivo del 85 % el primer año y del 65 % el segundo.","Trabajo efectivo de hasta el 65 % el primer año y del 85 % el segundo, con la proporción restante dedicada a formación.","Trabajo efectivo del 100 % en ambos años, con formación fuera de la jornada.","Trabajo efectivo del 50 % en cada año, con independencia del programa formativo."],1,"El tema recoge un máximo de trabajo efectivo del 65 % el primer año y del 85 % el segundo, dejando el tiempo restante para actividades formativas."],
+[4,"¿Qué limitación laboral presenta el contrato de alternancia según el material?",["No permite trabajar a tiempo parcial en ningún caso.","Permite hacer horas extraordinarias ordinarias siempre que se paguen.","Solo prohíbe las vacaciones durante la parte formativa.","No permite horas extraordinarias salvo fuerza mayor, ni trabajo nocturno o a turnos salvo que la naturaleza de la actividad lo requiera."],3,"La tabla prohíbe las horas extraordinarias salvo fuerza mayor y los trabajos a turnos y nocturnos, salvo que la naturaleza de la actividad lo requiera."],
+[4,"¿Qué retribución mínima recoge el manual para el contrato de formación en alternancia?",["La fijada en convenio, no inferior al 60 % del salario del grupo el primer año ni al 75 % el segundo, respetando el SMI proporcional.","El 100 % del salario del grupo en ambos años, con independencia del tiempo trabajado.","El 50 % del salario mínimo durante toda la duración, sin referencia al convenio.","Un importe fijo que no depende de la jornada efectiva ni de la formación."],0,"El manual indica mínimos del 60 % durante el primer año y del 75 % durante el segundo respecto al salario del grupo, respetando el SMI proporcional al tiempo efectivo."],
+[4,"¿Qué debe entregar la empresa al finalizar el contrato de formación en alternancia?",["Una liquidación que sustituye al historial formativo y no describe competencias.","Un informe de alta hospitalaria.","Un certificado que indique la duración de la formación teórica y el nivel de formación práctica adquirido.","Una certificación de que el trabajador no ha realizado horas de formación."],2,"La empresa debe entregar un certificado en el que conste la duración de la formación teórica y el nivel de formación práctica adquirida."],
+[4,"¿Qué cobertura de Seguridad Social menciona el material para el contrato de formación en alternancia?",["Solo asistencia sanitaria, excluyendo todas las demás contingencias.","Todas las contingencias, situaciones protegibles y prestaciones, incluido desempleo y cobertura de FOGASA.","Únicamente jubilación, sin cobertura por desempleo.","Exclusivamente las contingencias profesionales si se trabaja a jornada completa."],1,"El texto recoge una acción protectora que comprende todas las contingencias y prestaciones, incluido desempleo y FOGASA."],
+[4,"¿Cuál es la finalidad del contrato formativo para la obtención de la práctica profesional?",["Sustituir temporalmente a una persona en situación de incapacidad temporal.","Permitir un empleo sin relación con la titulación del trabajador.","Compatibilizar exclusivamente estudios universitarios y empleo sin periodo práctico.","Facilitar una práctica profesional adecuada al nivel de estudios realizado."],3,"El contrato para la obtención de práctica profesional tiene como objetivo facilitar la práctica adecuada al nivel de estudios del trabajador."],
+[4,"¿Qué plazo desde la obtención del título recoge el manual para concertar el contrato de práctica profesional?",["No deben haber transcurrido más de tres años, ampliados a cinco años en el caso de trabajadores con discapacidad.","No deben haber transcurrido más de diez años en ningún supuesto.","Solo puede concertarse el mismo año en que se obtiene el título.","Puede concertarse sin límite temporal si existe un puesto vacante."],0,"El material recoge un plazo de tres años desde la obtención del título y cinco años para trabajadores con discapacidad."],
+[4,"¿Qué debe especificarse por escrito en el contrato de práctica profesional?",["La relación de todos los puestos de la empresa con independencia del contrato.","El domicilio del centro educativo y las calificaciones de todos los compañeros.","La titulación del trabajador, el puesto que desempeñará y la duración del contrato.","Únicamente el salario y el número de cuenta bancaria."],2,"El manual exige forma escrita y que consten la titulación, el puesto de trabajo y la duración del contrato."],
+[4,"¿Qué duración del contrato para la obtención de práctica profesional recoge el material?",["Entre uno y cinco años, con prórrogas automáticas.","Entre seis meses y un año, sin posibilidad de prórroga.","Entre tres meses y dos años, con formación de alternancia.","Entre cuatro semanas y seis meses, salvo autorización empresarial."],1,"El cuadro indica que el contrato no puede durar menos de seis meses ni exceder de un año y que no puede ser objeto de prórroga."],
+[4,"¿Qué periodo de prueba máximo recoge la tabla para el contrato de práctica profesional?",["Seis meses en cualquier grupo profesional.","Tres meses si la empresa tiene más de 25 trabajadores.","No se permite el periodo de prueba en ningún supuesto.","Un mes como máximo, salvo lo dispuesto en el convenio colectivo."],3,"El manual señala que el periodo de prueba no será superior a un mes, salvo que el convenio colectivo establezca otra cosa."],
+[4,"¿Cuál es la regla retributiva del contrato de práctica profesional recogida en el material?",["La retribución de convenio o del grupo y nivel correspondiente, sin ser inferior al mínimo del contrato de alternancia ni al SMI.","La mitad del salario del grupo profesional, aunque quede por debajo del SMI.","El salario que el empresario decida sin referencia al convenio colectivo.","El salario de un contrato de sustitución, sin consideración del puesto realizado."],0,"El texto remite al salario fijado por convenio y al grupo y nivel correspondientes a las funciones, con los mínimos indicados para el SMI y la alternancia."],
+[4,"¿Qué limitación recoge el manual respecto a la experiencia previa en la misma empresa para un contrato de práctica profesional?",["Puede concertarse siempre que el trabajador haya realizado las mismas tareas durante cinco años.","Solo se limita cuando el trabajador no dispone de título alguno.","El texto excluye, entre otros supuestos, a quien ya haya obtenido experiencia profesional o realizado actividad formativa en la misma empresa durante más de tres meses.","No existe ninguna limitación de experiencia previa si el contrato se firma por escrito."],2,"Entre las restricciones del texto figura que el trabajador no haya obtenido experiencia profesional ni desarrollado actividad formativa en la misma empresa durante más de tres meses."],
+[4,"¿Qué debe certificar la empresa al finalizar el contrato de práctica profesional?",["El número de horas complementarias realizadas y la duración del periodo de prueba.","La duración de las prácticas, el puesto desempeñado y las principales tareas realizadas.","Solo el título académico obtenido antes del contrato.","La fecha de inicio y el salario, sin describir la actividad profesional."],1,"El manual indica que la empresa debe entregar un certificado con la duración de las prácticas, el puesto y las principales tareas."],
+[4,"¿Qué diferencia fundamental existe entre un contrato de práctica profesional y la Formación en Centros de Trabajo (FCT)?",["Ambos generan siempre una relación laboral y la misma remuneración.","La FCT se regula necesariamente mediante un contrato indefinido.","El contrato de práctica profesional no exige titulación, mientras que la FCT sí.","El contrato de práctica profesional genera relación laboral; la FCT se desarrolla mediante convenio de colaboración entre centro educativo y empresa, sin relación laboral."],3,"El texto distingue el contrato laboral de práctica profesional de la FCT, que constituye un módulo formativo con convenio de colaboración y no implica relación laboral."],
+[4,"¿Qué aspecto comparten los contratos formativos descritos en el tema?",["Tienen finalidades relacionadas con el aprendizaje o la práctica profesional y sus condiciones se regulan de forma específica.","Permiten que el trabajador omita los requisitos de titulación y formación.","Prohíben toda formación durante la jornada laboral.","Garantizan una indemnización idéntica al finalizar cualquier contrato temporal."],0,"Los dos contratos formativos persiguen finalidades específicas de formación o práctica profesional y tienen requisitos propios de duración, retribución y actividad."],
+[4,"Una empresa pacta 40 horas semanales de trabajo efectivo y ningún tiempo para la formación en un contrato de alternancia. ¿Qué problema presenta respecto a la tabla del tema?",["Ninguno, porque la formación puede realizarse siempre después de la jornada.","Solo sería incorrecto si el contrato superara un año.","El contrato de alternancia exige dedicar una parte de la distribución a formación y limita el porcentaje de trabajo efectivo.","La única condición relevante es que el salario se abone mensualmente."],2,"El contrato de alternancia debe incluir trabajo efectivo y formación en las proporciones recogidas por el manual; no es un contrato de jornada enteramente laboral sin formación."],
+
+/* TEMA 5: TIEMPO PARCIAL Y RELEVO (20) */
+[5,"¿Cómo define el tema el contrato a tiempo parcial?",["Un contrato cuya jornada siempre se concentra en fines de semana.","Un acuerdo para trabajar un número de horas inferior a la jornada de una persona a tiempo completo comparable.","Un contrato cuya duración debe ser inferior a treinta días.","Un contrato que solo puede celebrarse por circunstancias de la producción."],1,"El contrato a tiempo parcial supone una prestación de servicios durante menos horas que la jornada de un trabajador a tiempo completo comparable."],
+[5,"¿Qué duración puede tener un contrato a tiempo parcial según el manual?",["Solo puede ser temporal y no puede convertirse en indefinido.","Debe durar al menos un año para que la jornada sea parcial.","Únicamente puede concertarse durante los meses de verano.","Puede ser indefinido o de duración determinada."],3,"El texto indica que el contrato a tiempo parcial puede celebrarse por tiempo indefinido o por duración determinada."],
+[5,"¿Qué información sobre la jornada debe aparecer en un contrato a tiempo parcial formalizado por escrito?",["El número de horas contratadas al día, semana, mes o año y su distribución.","La jornada exacta de todos los demás empleados del centro.","Solo el horario de entrada, sin especificar las horas contratadas.","La cantidad de horas que podría realizar una persona a tiempo completo."],0,"El manual señala que el contrato escrito debe indicar las horas contratadas y su distribución."],
+[5,"¿Cuál es la regla general sobre las horas extraordinarias de los trabajadores a tiempo parcial que recoge el texto?",["Pueden realizarse sin límite cuando hay acuerdo verbal.","Solo pueden prohibirse si el contrato es indefinido.","No pueden realizarse, salvo por fuerza mayor en el supuesto indicado.","Se consideran siempre horas complementarias aunque no exista pacto."],2,"El tema indica que los trabajadores a tiempo parcial no pueden realizar horas extraordinarias, estructurales o no estructurales, salvo el supuesto de fuerza mayor."],
+[5,"¿Qué condición recoge el material para pactar horas complementarias?",["Que el contrato sea siempre a tiempo completo.","Que exista un pacto por escrito entre trabajador y empresario y la jornada no sea inferior a diez horas semanales en cómputo anual.","Que la empresa tenga más de 50 trabajadores y un convenio propio.","Que el trabajador lleve al menos cinco años en la misma empresa."],1,"El texto exige un pacto por escrito y que la jornada del contrato no sea inferior a diez horas semanales en cómputo anual."],
+[5,"¿Cuál es el porcentaje máximo de horas complementarias pactadas que recoge el manual como regla general?",["El 30 % de las horas ordinarias, ampliable por convenio sin superar el 60 %.","El 10 % de las horas ordinarias, sin posibilidad de modificación.","El 75 % de las horas ordinarias en todos los contratos.","El 100 % de las horas ordinarias si hay acuerdo escrito."],0,"El manual recoge un máximo general del 30 % de las horas ordinarias y permite un mayor porcentaje por convenio, sin superar el 60 %."],
+[5,"¿Cómo se retribuyen las horas complementarias según el material?",["Siempre con una cantidad fija mensual independiente de las horas realizadas.","Solo se cotizan, pero no se abonan al trabajador.","Con una cuantía inferior a la hora ordinaria en cualquier caso.","Como mínimo al valor de una hora ordinaria, y cotizan a la Seguridad Social."],3,"El texto señala que las horas complementarias se retribuyen como mínimo al valor de una hora ordinaria y cotizan a la Seguridad Social."],
+[5,"¿Qué límite establece el manual para la suma de horas ordinarias y complementarias?",["Puede superar sin límite la jornada de un trabajador a tiempo completo.","Debe coincidir necesariamente con la jornada máxima anual de cualquier empresa.","No puede exceder la jornada de un trabajador a tiempo completo comparable.","Solo puede llegar al 60 % de las horas ordinarias del contrato."],2,"El conjunto de horas ordinarias y complementarias no puede exceder la jornada de un trabajador a tiempo completo comparable."],
+[5,"¿Con cuánta antelación debe conocer el trabajador el día y la hora de las horas complementarias, según el texto?",["Con un mes de antelación en todos los casos.","Con tres días de antelación.","Con quince días de antelación desde el primer pacto.","No requiere comunicación si existe una cláusula contractual."],1,"El material recoge que el trabajador debe conocer el día y la hora de las horas complementarias con tres días de antelación."],
+[5,"¿Qué posibilidad de renuncia a las horas complementarias contempla el manual después de transcurrido un año?",["Renunciar a realizarlas con quince días de antelación.","Renunciar de forma inmediata sin comunicación previa.","Renunciar únicamente cuando finaliza el contrato indefinido.","Renunciar solo después de una resolución judicial."],0,"El texto indica que, transcurrido un año, el trabajador puede renunciar a las horas complementarias con quince días de antelación."],
+[5,"¿Qué finalidad tiene el contrato de relevo?",["Cubrir únicamente una vacante temporal por acumulación imprevisible de pedidos.","Permitir que el trabajador relevado aumente su jornada a tiempo completo.","Contratar a una persona para que realice prácticas relacionadas con sus estudios.","Contratar a un relevista para completar la jornada que reduce una persona que se jubila parcialmente."],3,"El contrato de relevo se celebra con un relevista para completar la jornada de otro trabajador que se jubila parcialmente."],
+[5,"¿Con quién puede celebrarse el contrato de relevo según el material?",["Exclusivamente con una persona que ya trabaja a jornada completa en el mismo puesto.","Solo con un trabajador que haya obtenido una titulación universitaria durante el último año.","Con una persona desempleada o con contrato de duración determinada, en los términos descritos.","Únicamente con un familiar de la persona que se jubila parcialmente."],2,"El tema describe el relevista como un trabajador desempleado o que tiene un contrato de duración determinada."],
+[5,"¿Qué reducción de jornada de la persona relevada recoge el material?",["Entre el 5 % y el 10 %, con independencia de la contratación.","Entre el 25 % y el 50 %, con posibilidad de hasta el 75 % en los supuestos de contrato de relevo indefinido y a tiempo completo descritos.","Entre el 50 % y el 90 % en todos los casos.","La jornada debe reducirse obligatoriamente exactamente un 30 %."],1,"El manual recoge una reducción entre el 25 % y el 50 %, con posibilidad de llegar al 75 % en determinadas condiciones del contrato de relevo."],
+[5,"¿Qué duración mínima recoge el tema para el contrato de relevo?",["Como mínimo, el tiempo que le falte al trabajador jubilado parcialmente para alcanzar la jubilación plena.","Un mes, con independencia del tiempo que falte para la jubilación.","Seis meses en todos los supuestos, sin posibilidad de superar ese plazo.","La misma duración que el periodo de prueba del relevista."],0,"El texto indica que la duración del contrato de relevo será como mínimo el tiempo que reste al jubilado parcial para alcanzar la jubilación plena."],
+[5,"¿Qué indemnización al terminar el contrato de relevo recoge el material?",["Una mensualidad por cada trimestre trabajado.","El salario correspondiente a todos los años restantes hasta la jubilación.","No existe ninguna indemnización en ningún supuesto.","Doce días de salario por año trabajado."],3,"El tema señala que, a la finalización del contrato de relevo, el trabajador tendrá derecho a doce días de salario por año trabajado."],
+[5,"¿Qué condición recoge el tema para acceder a la jubilación parcial anticipada que da lugar a un contrato de relevo?",["Tener siempre un contrato a tiempo parcial desde el inicio de la vida laboral.","No contar con antigüedad en la empresa si se ha cumplido la edad mínima.","Tener un contrato a jornada completa y cumplir los requisitos de edad y cotización descritos.","Haber realizado previamente un contrato para la obtención de práctica profesional."],2,"El manual recoge, entre los requisitos, tener contrato a jornada completa y cumplir las condiciones de edad, cotización, antigüedad y reducción de jornada."],
+[5,"¿Qué antigüedad mínima en la empresa menciona el manual entre los requisitos de jubilación parcial anticipada?",["Tres meses.","Seis años.","Diez años en cualquier caso.","Un año, prorrogable por convenio."],1,"Entre los requisitos del manual figura una antigüedad mínima de seis años en la empresa."],
+[5,"¿Qué acuerdo menciona el texto para solicitar la jubilación parcial anticipada?",["Llegar a un acuerdo con la empresa, salvo que el derecho esté recogido en convenio colectivo.","Obtener siempre el consentimiento del trabajador relevista antes de la solicitud.","Solicitar autorización al servicio de empleo como requisito único.","No se requiere ningún acuerdo con la empresa ni regulación colectiva."],0,"El manual señala la necesidad de llegar a un acuerdo con la empresa, excepto si el derecho se recoge en el convenio colectivo."],
+[5,"¿Por qué las horas complementarias no deben superar el máximo pactado y legalmente previsto en el tema?",["Porque solo pueden utilizarse durante un periodo de prueba.","Porque permiten que el contrato a tiempo parcial se convierta automáticamente en temporal.","Porque la empresa puede ampliar indefinidamente la jornada mediante llamadas verbales.","Porque son horas adicionales a las ordinarias y están sujetas a límites y condiciones de comunicación y retribución."],3,"Las horas complementarias deben pactarse por escrito, respetar porcentajes máximos y la jornada comparable, y comunicarse con la antelación indicada."],
+[5,"¿Qué distingue principalmente el contrato de relevo de un contrato temporal por circunstancias de la producción?",["El contrato de relevo sirve exclusivamente para cubrir un incremento imprevisible de la demanda.","El contrato por producción exige siempre que una persona se jubile parcialmente.","El contrato de relevo se vincula a la reducción de jornada por jubilación parcial y a la contratación de un relevista.","El contrato de relevo solo existe cuando la empresa tiene menos de 25 trabajadores."],2,"El contrato de relevo está vinculado a la jubilación parcial y a la cobertura de la parte de jornada que deja de realizar el trabajador relevado."],
+
+/* TEMA 6: TELETRABAJO, CONTRATO EN GRUPO Y TRADE (20) */
+[6,"¿Qué es el trabajo a distancia según el material?",["La realización de la actividad laboral desde el domicilio o el lugar elegido por la persona trabajadora, durante toda o parte de la jornada y con carácter regular.","La prestación de servicios exclusivamente en las instalaciones de la empresa usuaria.","La realización de tareas sin horario ni relación laboral.","Un contrato que solo puede celebrarse cuando la empresa tiene menos de 25 trabajadores."],0,"El manual define el trabajo a distancia como actividad laboral prestada en el domicilio o lugar elegido por la persona trabajadora, de forma regular y durante toda o parte de la jornada."],
+[6,"¿Qué diferencia recoge el texto entre trabajo a distancia y teletrabajo?",["El trabajo a distancia siempre exige uso exclusivo de medios informáticos, mientras el teletrabajo no los utiliza.","El teletrabajo solo puede realizarse desde una oficina de la empresa.","El trabajo a distancia no puede incluir parte de la jornada presencial.","El teletrabajo es trabajo a distancia que utiliza de forma exclusiva o prevalente medios y sistemas informáticos, telemáticos o de telecomunicación."],3,"El material define el teletrabajo como el trabajo a distancia realizado mediante el uso exclusivo o prevalente de esas tecnologías."],
+[6,"¿Qué porcentaje de jornada y periodo de referencia señala el material para aplicar la regulación del trabajo a distancia?",["El 10 % durante un mes, en cualquier contrato.","Un mínimo del 30 % de la jornada en un periodo de referencia de tres meses, o el porcentaje proporcional equivalente indicado.","La totalidad de la jornada durante un año completo.","El 50 % de la jornada en un periodo de referencia de cinco años."],1,"El texto recoge un mínimo del 30 % de la jornada durante un periodo de referencia de tres meses, con los supuestos especiales que señala."],
+[6,"¿Qué particularidad indica el manual respecto a los contratos con menores y determinados contratos formativos?",["Pueden realizarse enteramente a distancia si lo acuerda el empresario.","No se les aplica ninguna condición específica en materia presencial.","Deben garantizar al menos el 50 % del tiempo de trabajo presencial en el centro según el texto.","Están obligados a utilizar teletrabajo durante todo el contrato."],2,"El manual señala que los contratos con menores y determinados formativos deben garantizar como mínimo el 50 % del tiempo de trabajo presencial."],
+[6,"¿Qué carácter debe tener el trabajo a distancia según el material?",["Es voluntario y reversible para ambas partes.","Es obligatorio siempre que la empresa lo determine.","Es irreversible una vez superado el periodo de prueba.","Solo puede establecerse por decisión judicial."],0,"El texto indica que el trabajo a distancia es voluntario y reversible para trabajador y empresario."],
+[6,"¿Cuándo debe formalizarse por escrito el acuerdo de trabajo a distancia según el tema?",["Después de finalizar el primer año de trabajo remoto.","Solo cuando la jornada es inferior a diez horas semanales.","Al finalizar el periodo de prueba, con efecto retroactivo.","Antes de iniciarse el trabajo a distancia."],3,"El manual indica que el contrato debe formalizarse por escrito antes del inicio del trabajo a distancia."],
+[6,"¿Qué información menciona el material entre el contenido del acuerdo de trabajo a distancia?",["Exclusivamente el salario anual del trabajador.","Los medios utilizados, gastos compensables, horario, porcentaje de teletrabajo, lugar de trabajo y medidas de control empresarial.","Únicamente el número de días de vacaciones que corresponde a la plantilla.","La lista de todos los clientes y proveedores de la empresa."],1,"El texto incluye los medios, gastos, horario, porcentaje de teletrabajo, lugar de prestación y medidas de control, entre otros elementos."],
+[6,"¿Qué derechos deben mantenerse para los trabajadores a distancia según el manual?",["Solo el derecho a recibir herramientas informáticas.","Menos oportunidades de promoción que el personal presencial.","Los mismos derechos y oportunidades que el personal presencial en aspectos como estabilidad, formación, promoción, jornada y salario.","Únicamente los derechos recogidos en la política interna de teletrabajo."],2,"El manual establece que los trabajadores a distancia tienen los mismos derechos y oportunidades que quienes trabajan presencialmente."],
+[6,"¿Qué derecho relacionado con la organización del tiempo señala el material para los trabajadores a distancia?",["La posibilidad de aumentar la jornada sin límites.","La obligación de atender comunicaciones de empresa a cualquier hora.","La pérdida del derecho a la intimidad cuando se trabaja desde casa.","El derecho a horario flexible y a la desconexión digital fuera de su horario, respetando la duración máxima de jornada."],3,"El texto destaca el derecho a la intimidad y a la protección de datos, el horario flexible y la desconexión digital fuera del horario de trabajo."],
+[6,"¿Cuál es una ventaja del teletrabajo para la persona trabajadora descrita en el manual?",["Mayor flexibilidad, mejor conciliación y reducción de desplazamientos y gastos asociados.","Eliminación de toda necesidad de coordinación con el equipo.","Garantía de que nunca existirá aislamiento profesional.","Ausencia de la necesidad de organizar el tiempo de trabajo."],0,"Entre las ventajas para el trabajador, el manual menciona flexibilidad, conciliación, autorganización, reducción de gastos y mejora de calidad de vida."],
+[6,"¿Qué inconveniente del teletrabajo para la persona trabajadora recoge el material?",["Aumento obligatorio de los desplazamientos diarios.","Mayor control físico presencial por parte de la empresa.","La imposibilidad de realizar tareas sin acudir a la oficina.","Dificultad para desconectar, sensación de aislamiento o menor separación entre vida laboral y privada."],3,"El cuadro de ventajas e inconvenientes menciona dificultad para desconectar, aislamiento y falta de separación entre espacios y tiempos laborales y privados."],
+[6,"¿Qué ventaja empresarial del teletrabajo describe el manual?",["Elimina la necesidad de invertir en tecnología.","Puede reducir gastos de espacio, energía y logística y facilitar la contratación de talento.","Garantiza que no haya conflictos ni necesidades de coordinación.","Permite prescindir de la organización del trabajo."],1,"El texto menciona ahorro de costes, expansión geográfica, acceso y retención de talento y aumento de productividad por objetivos."],
+[6,"¿Qué se entiende por contrato de trabajo en grupo?",["Un contrato individual en el que cada trabajador negocia por separado sus obligaciones con el empresario.","Un acuerdo entre varios empresarios para compartir una plantilla.","Un contrato en el que el empresario contrata con un grupo considerado en su totalidad y mantiene derechos y obligaciones laborales respecto a su representante.","Un contrato que solo se utiliza para actividades de trabajo a distancia."],2,"El manual explica que el empresario contrata con el grupo considerado en su totalidad y tiene derechos y obligaciones laborales respecto al representante del grupo."],
+[6,"¿Qué duración puede tener el contrato de trabajo en grupo según el texto?",["Indefinida o determinada.","Únicamente temporal y por menos de cuatro semanas.","Solo indefinida, sin posibilidad de pactar duración determinada.","Exclusivamente la duración de un periodo de prueba."],0,"El texto indica que la duración del contrato de trabajo en grupo puede ser indefinida o determinada."],
+[6,"¿Qué porcentaje mínimo de ingresos debe proceder de un cliente para que una persona pueda ser considerada TRADE según el manual?",["El 25 % de sus ingresos anuales.","El 50 % de sus ingresos laborales.","El 60 % de los ingresos procedentes de una única empresa.","Al menos el 75 % de sus ingresos."],3,"El material define la dependencia económica del TRADE cuando percibe de un cliente al menos el 75 % de sus ingresos."],
+[6,"¿Qué rasgo diferencia al TRADE de un trabajador contratado por cuenta ajena?",["El TRADE siempre recibe instrucciones de jornada y organización iguales a las de los empleados.","El TRADE desarrolla una actividad económica o profesional por cuenta propia, con criterios organizativos propios y asumiendo el riesgo de su actividad.","El TRADE trabaja gratuitamente a cambio de formación.","El TRADE debe ser necesariamente una sociedad mercantil."],1,"El tema describe al TRADE como persona física que actúa por cuenta propia con organización propia y asume el riesgo de su actividad, aunque dependa económicamente de un cliente."],
+[6,"¿Qué debe contener el contrato entre el TRADE y su cliente según el texto?",["Solo el domicilio del cliente y el número de identificación fiscal.","La relación de trabajadores contratados por cuenta ajena para desarrollar la actividad.","La actividad que se realizará, la retribución, los descansos, la interrupción anual y la indemnización que corresponda.","La distribución de las horas de formación alterna con empleo."],2,"El contrato debe formalizarse por escrito y reflejar actividad, retribución, descanso semanal, interrupción anual de actividad e indemnización, entre otros aspectos."],
+[6,"¿Cuál de estas condiciones figura en la lista de requisitos del TRADE?",["No tener trabajadores por cuenta ajena a su cargo y no subcontratar la actividad en los términos recogidos.","Disponer siempre de una oficina propiedad del cliente.","Tener contrato laboral indefinido con la empresa cliente.","No disponer de materiales propios y utilizar solo los de la empresa cliente."],0,"El manual recoge entre los requisitos no tener trabajadores por cuenta ajena, no contratar ni subcontratar la actividad, disponer de infraestructura propia y organizarla con criterios propios."],
+[6,"¿Qué papel puede desempeñar el cliente respecto a la actividad del TRADE?",["Dirigirlo como empleado en todos los detalles y asumir íntegramente su riesgo económico.","Impedir que el TRADE tenga infraestructura propia.","Fijar necesariamente turnos idénticos a los de todos sus trabajadores.","Dar indicaciones técnicas sin eliminar los criterios organizativos propios del TRADE."],3,"El texto permite que el TRADE reciba indicaciones técnicas del cliente, pero señala que debe desarrollar su actividad con criterios organizativos propios."],
+[6,"¿Qué supuesto señala el manual sobre transportistas titulares de autorizaciones administrativas?",["Nunca pueden ser considerados TRADE, incluso si dependen económicamente de un cliente.","Pueden considerarse TRADE si perciben de un mismo cliente al menos el 75 % de sus ingresos y cumplen los demás requisitos indicados.","Se consideran siempre trabajadores por cuenta ajena de la empresa que recibe el servicio.","Solo pueden tener esta condición cuando se les contrata mediante una ETT."],1,"El manual incluye a determinados transportistas en los supuestos TRADE si cumplen el requisito de dependencia económica y carecen de trabajadores a su cargo."],
+
+/* TEMA 7: ETT E INCENTIVOS A LA CONTRATACIÓN (15) */
+[7,"¿Cuál es la actividad propia de una empresa de trabajo temporal (ETT)?",["Contratar directamente a trabajadores para cederlos temporalmente a una empresa usuaria donde prestan la actividad laboral.","Seleccionar personal para que trabaje siempre por cuenta propia.","Elaborar convenios colectivos para empresas de un mismo sector.","Organizar exclusivamente cursos de formación sin formalizar relaciones laborales."],0,"El manual define las ETT como empresas que contratan directamente a trabajadores para cederlos temporalmente a una empresa usuaria."],
+[7,"¿Qué relación contractual se establece entre la ETT y la empresa usuaria?",["Un contrato de formación en alternancia entre ambas empresas.","Un contrato individual indefinido entre la empresa usuaria y cada trabajador de la ETT.","Un convenio de prácticas entre el trabajador y el centro educativo.","Un contrato de puesta a disposición."],3,"El contrato entre la ETT y la empresa usuaria se denomina contrato de puesta a disposición."],
+[7,"¿Qué relación surge entre la ETT y el trabajador cedido?",["Una relación civil de colaboración entre profesionales autónomos en todos los supuestos.","Una relación laboral mediante la que la ETT contrata al trabajador para cederlo a la empresa usuaria.","Una relación administrativa equivalente a la de un funcionario público.","Una relación de formación sin salario ni obligación de alta en la Seguridad Social."],1,"El texto explica que entre ETT y trabajador surge una relación laboral, que puede ser temporal o indefinida para cederlo a la empresa usuaria."],
+[7,"¿Qué función tiene la empresa usuaria en la relación triangular de la ETT?",["Contratar al trabajador directamente con la misma relación laboral que la ETT, de forma obligatoria.","Asumir las funciones de todas las empresas y organismos que intervienen en la contratación.","Recibir el servicio laboral y ejercer el poder de dirección y control de la actividad.","Realizar exclusivamente la inscripción del trabajador en la Seguridad Social."],2,"El manual indica que la empresa usuaria ejerce el poder de dirección y control de la actividad laboral."],
+[7,"¿Qué obligaciones atribuye el texto a la ETT respecto al trabajador cedido?",["Afiliarlo o darlo de alta en la Seguridad Social, pagar su salario y ejercer el poder disciplinario.","Determinar las tareas diarias en la empresa usuaria y controlar directamente todo el trabajo.","Evitar formalizar un contrato laboral si la cesión dura menos de un mes.","Pagar únicamente una comisión a la empresa usuaria, sin pagar el salario."],0,"El tema asigna a la ETT el alta en Seguridad Social, el pago del salario y el ejercicio del poder disciplinario."],
+[7,"¿Cómo debe formalizarse el contrato de puesta a disposición?",["De forma verbal si ambas empresas tienen más de 25 trabajadores.","Solo cuando el trabajador lo solicite tras incorporarse.","Mediante un contrato indefinido celebrado directamente con la empresa usuaria.","Por escrito y para atender necesidades temporales de la empresa usuaria en los supuestos permitidos."],3,"El contrato de puesta a disposición debe realizarse por escrito y solo para satisfacer necesidades temporales de la empresa usuaria en los supuestos indicados."],
+[7,"¿Cuál de estos usos del contrato de puesta a disposición recoge el manual?",["Cubrir permanentemente cualquier puesto estructural de la empresa sin justificar la necesidad.","Atender necesidades ocasionales por acumulación de tareas, circunstancias de producción o determinados supuestos de sustitución y formación.","Sustituir a trabajadores que ejercen el derecho de huelga.","Cubrir puestos que revistan especial peligrosidad sin condiciones adicionales."],1,"El material enumera necesidades temporales, como acumulación de tareas, sustitución de trabajadores con reserva y contratos formativos."],
+[7,"¿En qué supuestos prohíbe el manual utilizar contratos de puesta a disposición?",["Para cubrir una necesidad temporal de producción justificada.","Para un contrato de formación en alternancia autorizado.","Para trabajos de especial peligrosidad o para sustituir a trabajadores en huelga.","Para sustituir a un trabajador que mantiene el derecho a reserva de su puesto."],2,"El texto prohíbe los contratos de puesta a disposición para trabajos de especial peligrosidad o para sustituir a trabajadores en huelga."],
+[7,"¿Qué retribución recoge el material para un trabajador contratado por una ETT?",["La misma retribución que la de los trabajadores de la empresa usuaria que desempeñan el mismo puesto, según el texto.","Una cuantía inferior a la de los trabajadores de la empresa usuaria por definición.","Solo una cantidad pactada entre la ETT y el trabajador, sin relación con el puesto.","La remuneración de un aprendiz aunque el trabajador realice otras funciones."],0,"El manual señala que el trabajador contratado por ETT debe recibir como mínimo la retribución de un trabajador de la empresa usuaria que desempeñe el mismo puesto."],
+[7,"¿Qué indemnización al finalizar el contrato de una ETT recoge el material?",["Tres días de salario por año trabajado.","Una mensualidad por cada trimestre de trabajo.","Veinte días de salario por año trabajado en todos los supuestos.","Doce días de salario por año trabajado."],3,"El texto señala que, al terminar el contrato, los trabajadores de ETT tienen derecho a doce días de salario por año trabajado."],
+[7,"¿Qué describe mejor una reducción de cuotas a la Seguridad Social?",["Una cantidad que el trabajador debe devolver a la empresa al terminar el contrato.","Una disminución de las cotizaciones que la empresa debe ingresar, conforme a los requisitos del incentivo aplicable.","Una modificación de la duración pactada del contrato de trabajo.","Un pago que sustituye al salario del trabajador."],1,"Las reducciones disminuyen las cuotas de Seguridad Social que la empresa debe abonar si cumple los requisitos exigidos."],
+[7,"¿Qué describe mejor una bonificación a la Seguridad Social en la tabla del manual?",["Un premio salarial que paga el trabajador al empresario.","La eliminación automática de todas las obligaciones laborales.","Una cantidad que el organismo correspondiente asume o deja de ingresar según los requisitos del incentivo.","Un contrato temporal que se convierte en indefinido sin ninguna actuación empresarial."],2,"El cuadro diferencia reducciones y bonificaciones sobre las cuotas; la bonificación supone el importe que, conforme al incentivo, deja de abonar la empresa y asume el organismo competente."],
+[7,"¿Qué obligación destaca el material para las empresas que contratan indefinidamente a trabajadores con discapacidad con los incentivos descritos?",["Mantener la estabilidad de estos trabajadores por un periodo mínimo de tres años y, si se produce despido procedente en los términos del texto, sustituirlos por otros trabajadores con discapacidad.","Transformar todos los contratos de la empresa en contratos de relevo.","Garantizar que todos los trabajadores de la empresa teletrabajen al menos el 30 % de su jornada.","Renunciar a cualquier bonificación relacionada con la Seguridad Social."],0,"La tabla del manual recoge una obligación de mantener la estabilidad de los trabajadores con discapacidad durante un mínimo de tres años y sustituirlos en determinados supuestos."],
+[7,"¿Qué obligación previa recoge el tema para que las empresas puedan beneficiarse de determinados incentivos?",["No comunicar ningún cambio de contrato al Servicio Público de Empleo.","Contratar exclusivamente a través de una ETT y sin formalización escrita.","Reducir la jornada de todos los trabajadores de la empresa.","Hallarse al corriente en el cumplimiento de las obligaciones tributarias y con la Seguridad Social."],3,"En la tabla de incentivos para contratación indefinida de personas con discapacidad, el material exige estar al corriente de las obligaciones tributarias y con la Seguridad Social."],
+[7,"¿Qué afirmación resume mejor la relación triangular creada por una ETT?",["La empresa usuaria contrata siempre al trabajador directamente y la ETT solo realiza la selección.","La ETT mantiene la relación laboral con el trabajador, acuerda la puesta a disposición con la empresa usuaria y esta dirige y controla la actividad realizada.","El trabajador tiene una relación laboral exclusivamente con el organismo público que tramita el alta.","La ETT y la empresa usuaria no mantienen ningún acuerdo entre ellas."],1,"La relación triangular contiene el vínculo laboral entre ETT y trabajador, el contrato de puesta a disposición con la empresa usuaria y la prestación de servicios en esta última."] 
+];
+
+const $ = id => document.getElementById(id);
+const letras = ["A","B","C","D"];
+let temaSeleccionado = "all";
+let preguntasSesion = [];
+let indiceActual = 0;
+let opcionSeleccionada = null;
+let comprobada = false;
+let aciertos = 0;
+let registroRespuestas = [];
+let ultimaCantidad = "10";
+
+function mezclar(lista){
+  const copia = lista.slice();
+  for(let i=copia.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [copia[i],copia[j]]=[copia[j],copia[i]];
+  }
+  return copia;
+}
+
+function nombreTema(id){
+  if(id==="all") return "Todos los epígrafes";
+  return temas.find(t=>t.id===id)?.name || "Tema seleccionado";
+}
+
+function pintarTemas(){
+  const todos={id:"all",name:"Todos los epígrafes",desc:"Preguntas mezcladas de los siete apartados."};
+  const lista=[todos,...temas];
+  $("topicGrid").innerHTML=lista.map(t=>`
+    <button type="button" class="topic ${String(t.id)===String(temaSeleccionado)?"selected":""}"
+      data-topic="${t.id}" aria-pressed="${String(t.id)===String(temaSeleccionado)}">
+      <span class="topic-num">${t.id==="all"?"✦":String(t.id).padStart(2,"0")}</span>
+      <span><span class="topic-name">${t.name}</span><span class="topic-desc">${t.desc}</span></span>
+    </button>`).join("");
+  $("topicGrid").querySelectorAll("[data-topic]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      temaSeleccionado=btn.dataset.topic==="all"?"all":Number(btn.dataset.topic);
+      pintarTemas();
+    });
+  });
+}
+
+function iniciarTest(){
+  ultimaCantidad=$("questionCount").value;
+  let candidatas=banco.filter(q=>temaSeleccionado==="all"||q[0]===temaSeleccionado);
+  candidatas=mezclar(candidatas);
+  const cantidad=ultimaCantidad==="all"?candidatas.length:Number(ultimaCantidad);
+  preguntasSesion=candidatas.slice(0,Math.min(cantidad,candidatas.length)).map(q=>{
+    const opciones=mezclar(q[2].map((texto,indiceOriginal)=>({texto,indiceOriginal})));
+    return {temaId:q[0],pregunta:q[1],opciones,correcta:q[3],explicacion:q[4]};
+  });
+  indiceActual=0;
+  aciertos=0;
+  registroRespuestas=[];
+  opcionSeleccionada=null;
+  comprobada=false;
+  $("home").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("quizTitle").textContent=nombreTema(temaSeleccionado);
+  renderizarPregunta();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderizarPregunta(){
+  const q=preguntasSesion[indiceActual];
+  opcionSeleccionada=null;
+  comprobada=false;
+  $("progressText").textContent=`Pregunta ${indiceActual+1} de ${preguntasSesion.length}`;
+  $("scoreLive").textContent=`Aciertos: ${aciertos}`;
+  const porcentaje=(indiceActual/preguntasSesion.length)*100;
+  $("progressFill").style.width=`${porcentaje}%`;
+  $("progressBar").setAttribute("aria-valuenow",String(Math.round(porcentaje)));
+  $("qCount").textContent=`PREGUNTA ${String(indiceActual+1).padStart(3,"0")}`;
+  $("qTopic").textContent=temas.find(t=>t.id===q.temaId)?.name||"";
+  $("questionText").textContent=q.pregunta;
+  $("options").innerHTML="";
+  q.opciones.forEach((opcion,indice)=>{
+    const boton=document.createElement("button");
+    boton.type="button";
+    boton.className="option";
+    boton.dataset.option=String(indice);
+    boton.setAttribute("aria-pressed","false");
+    const letra=document.createElement("span");
+    letra.className="letter";
+    letra.textContent=letras[indice];
+    const texto=document.createElement("span");
+    texto.textContent=opcion.texto;
+    boton.append(letra,texto);
+    boton.addEventListener("click",()=>seleccionarOpcion(indice));
+    $("options").append(boton);
+  });
+  $("feedback").className="feedback hidden";
+  $("feedback").replaceChildren();
+  $("checkBtn").classList.remove("hidden");
+  $("checkBtn").disabled=true;
+  $("nextBtn").classList.add("hidden");
+  $("hint").textContent="Selecciona la opción que consideres correcta.";
+}
+
+function seleccionarOpcion(indice){
+  if(comprobada)return;
+  opcionSeleccionada=indice;
+  $("options").querySelectorAll(".option").forEach((boton,i)=>{
+    boton.classList.toggle("chosen",i===indice);
+    boton.setAttribute("aria-pressed",String(i===indice));
+  });
+  $("checkBtn").disabled=false;
+}
+
+function comprobarRespuesta(){
+  if(comprobada||opcionSeleccionada===null)return;
+  comprobada=true;
+  const q=preguntasSesion[indiceActual];
+  const elegida=q.opciones[opcionSeleccionada];
+  const correcta=elegida.indiceOriginal===q.correcta;
+  if(correcta)aciertos++;
+
+  const opcionCorrecta=q.opciones.findIndex(o=>o.indiceOriginal===q.correcta);
+  registroRespuestas.push({
+    q,
+    correcta,
+    elegida:elegida.texto,
+    correctaTexto:q.opciones[opcionCorrecta].texto
+  });
+
+  $("options").querySelectorAll(".option").forEach((boton,i)=>{
+    boton.disabled=true;
+    if(q.opciones[i].indiceOriginal===q.correcta)boton.classList.add("correct");
+    if(i===opcionSeleccionada&&!correcta)boton.classList.add("incorrect");
+  });
+
+  const feedback=$("feedback");
+  feedback.className=`feedback ${correcta?"good":"bad"}`;
+  const titulo=document.createElement("div");
+  titulo.className="feedback-title";
+  titulo.textContent=correcta?"¡Respuesta correcta!":"Respuesta incorrecta";
+  const explicacion=document.createElement("p");
+  explicacion.textContent=(correcta
+    ?"Has identificado la opción adecuada. "
+    :`La respuesta correcta es ${letras[opcionCorrecta]}: ${q.opciones[opcionCorrecta].texto}. `)+q.explicacion;
+  feedback.replaceChildren(titulo,explicacion);
+
+  $("scoreLive").textContent=`Aciertos: ${aciertos}`;
+  $("checkBtn").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").textContent=indiceActual===preguntasSesion.length-1?"Ver resultados":"Siguiente pregunta →";
+  $("hint").textContent=correcta
+    ?"Respuesta correcta registrada."
+    :"Revisa la explicación antes de continuar.";
+}
+
+function siguientePregunta(){
+  if(!comprobada)return;
+  if(indiceActual<preguntasSesion.length-1){
+    indiceActual++;
+    renderizarPregunta();
+  }else{
+    mostrarResultados();
+  }
+}
+
+function mostrarResultados(){
+  $("quiz").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  const total=preguntasSesion.length;
+  const fallos=total-aciertos;
+  const porcentaje=Math.round(aciertos/total*100);
+  $("resultScore").textContent=`${aciertos}/${total}`;
+  $("resultTitle").textContent=`${nombreTema(temaSeleccionado)} completado`;
+  $("resultMessage").textContent=porcentaje>=90
+    ?"Excelente dominio del contenido. Has demostrado una comprensión muy sólida de las modalidades de contratación y sus requisitos."
+    :porcentaje>=75
+      ?"Buen resultado. Repasa los matices de las preguntas falladas para consolidar el tema."
+      :porcentaje>=50
+        ?"Has conseguido una base de aciertos, pero conviene revisar las explicaciones y repetir la práctica para afianzar los conceptos."
+        :"Te recomendamos volver a estudiar el tema y repetir la práctica. Presta atención a las diferencias entre modalidades contractuales.";
+  $("resultStats").innerHTML=`
+    <div class="stat"><strong>${aciertos}</strong><span>Aciertos</span></div>
+    <div class="stat"><strong>${fallos}</strong><span>Fallos</span></div>
+    <div class="stat"><strong>${porcentaje}%</strong><span>Resultado</span></div>`;
+  $("reviewPanel").classList.add("hidden");
+  $("reviewPanel").open=false;
+  $("reviewList").innerHTML=registroRespuestas.map((r,i)=>`
+    <div style="padding:13px 0;border-bottom:1px solid var(--line)">
+      <strong>${i+1}. ${escaparHTML(r.q.pregunta)}</strong>
+      <p style="margin:7px 0;color:${r.correcta?"var(--good)":"var(--bad)"}">
+        Tu respuesta: ${escaparHTML(r.elegida)} ${r.correcta?"✓":"✗"}
+      </p>
+      ${r.correcta?"":`<p style="margin:4px 0"><strong>Respuesta correcta:</strong> ${escaparHTML(r.correctaTexto)}</p>`}
+      <p style="margin:5px 0">${escaparHTML(r.q.explicacion)}</p>
+    </div>`).join("");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function escaparHTML(texto){
+  return String(texto).replace(/[&<>"']/g,caracter=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[caracter]));
+}
+
+function volverInicio(){
+  $("quiz").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("home").classList.remove("hidden");
+  pintarTemas();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+$("startBtn").addEventListener("click",iniciarTest);
+$("checkBtn").addEventListener("click",comprobarRespuesta);
+$("nextBtn").addEventListener("click",siguientePregunta);
+$("homeBtn").addEventListener("click",volverInicio);
+$("restartThemeBtn").addEventListener("click",iniciarTest);
+$("againBtn").addEventListener("click",iniciarTest);
+$("resultsHomeBtn").addEventListener("click",volverInicio);
+$("reviewBtn").addEventListener("click",()=>{
+  $("reviewPanel").classList.remove("hidden");
+  $("reviewPanel").open=!$("reviewPanel").open;
+  if($("reviewPanel").open){
+    $("reviewPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+});
+
+pintarTemas();
+</script>
+</body>
+</html>
